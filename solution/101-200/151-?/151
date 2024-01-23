@@ -1,0 +1,76 @@
+## [152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/description/)
+
+#### #动态规划
+1.题意
+
+    1）给定数组nums，找出非空连续子数组的最大乘积。
+
+    2）数组长度[1, 2 * 10E4]，元素[-10, 10]，结果保证在32整数范围。
+
+2.示例
+
+    1）输入: nums = [2,3,-2,4]，输出: 6
+
+    2）输入: nums = [-2,0,-1]，输出: 0。
+## 解法
+1.解析：动态规划
+
+    ①int[n][2] dp。dp[i][0]、dp[i][1]分别代表以nums[i]结尾的『连续子数组乘积最大值』，nums[i]可<0.
+
+    ②边界条件。dp[0][0] = nums[0]; dp[0][0] = nums[0];
+
+    ③状态转移方程、令num = nums[i]。
+
+          dp[i][0] = max(dp[i-1][0] * num, dp[i-1][1] * num, num); 
+
+          dp[i][1] = min(dp[i-1][0] * num, dp[i-1][1] * num, num);
+
+    ④空间优化。dp[i][]仅和dp[i-1][]有关、可使用2变量代替。
+
+2.代码
+```java
+class Solution {
+    public int maxProduct(int[] nums) {
+        int n = nums.length;
+        int[][] dp = new int[n][2];
+        int maxMul = nums[0];
+        dp[0][0] = nums[0];//最大
+        dp[0][1] = nums[0];//最小
+
+        for (int i = 1; i < n; i ++) {
+            int num = nums[i];
+            int a = dp[i - 1][0] * num;
+            int b = dp[i - 1][1] * num;
+            dp[i][0] = Math.max(num, Math.max(a, b));
+            dp[i][1] = Math.min(num, Math.min(a, b));
+            maxMul = Math.max(maxMul, dp[i][0]);
+        }
+        return maxMul;
+    }
+}
+```
+```java
+class Solution {
+    public int maxProduct(int[] nums) {
+        int n = nums.length;
+        int maxMul = nums[0];
+        int curMax = nums[0];
+        int curMin = nums[0];
+
+        for (int i = 1; i < n; i ++) {
+            int num = nums[i];
+            int a = curMax * num;
+            int b = curMin * num;
+            curMax = Math.max(num, Math.max(a, b));
+            curMin = Math.min(num, Math.min(a, b));
+            maxMul = Math.max(maxMul, curMax);
+        }
+        return maxMul;           
+    }
+}
+```
+3.复杂度
+
+1）时：O(n)
+
+2）空：O(n)→O(1)
