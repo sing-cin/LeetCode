@@ -1,3 +1,1 @@
-# LeetCode
-1~10
-git down
+整理了LeetCode部分题解（java版本）
